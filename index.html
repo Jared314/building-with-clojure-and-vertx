@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Building with Clojure and Vert.x</title>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="styles/monokai_sublime.css">
+    <link rel="stylesheet" href="slides.css">
+</head>
+<body>
+    <article id="deck1">
+
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Building with <strong>Clojure</strong> and <strong>Vert.x</strong></h1>
+                <div class="unbrokenline"></div>
+                <div class="me"></div>
+                <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Does Vert.x make Node.js <strong>irrelevant?</strong></h1>
+                <div class="unbrokenline"></div>
+                <div class="me"></div>
+                <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+                </div>
+            </div>
+        </section>
+
+
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Knowledge</h1>
+                <h4>is the difference between choice and choices.</h4>
+                <div class="byline">
+                    <div class="classy">Unknown Author</div>
+                </div>
+            </div>
+        </section>
+
+
+<!-- Node.js Express example -->
+<!-- Vert.x example -->
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Simple Example</h1>
+                <div style="display:inline-block; width:390px; vertical-align:top; overflow-x:hidden;">
+                <h4>Vert.x</h4>
+                <pre style="font-size:11px;"><code class="clojure">(ns example.http.server
+  (:require [vertx.http :as http]
+            [vertx.http.route :as rm]))
+
+(def routes
+  (-> (rm/get "/currenttime"
+              #(http/end
+                 (http/server-response %)
+                 (str
+                   (System/currentTimeMillis))))
+
+      (rm/all #".*"
+              #(http/send-file
+                 (http/server-response %)
+                 "index.html"))))
+
+(let [port (Integer. (or (System/getenv "PORT")
+                         "3000"))]
+  (-> (http/server)
+      (http/on-request routes)
+      (http/listen port))
+  (println "Starting Http server on port "
+           port))</code></pre>
+                </div>
+                <div style="display:inline-block; width:390px; vertical-align:top; overflow-x:hidden;">
+                <h4>Node.js</h4>
+                <pre style="font-size:11px;"><code class="javascript">var path = require('path'),
+    express = require('express'),
+    app = express(),
+    port = process.env.PORT || 3000;
+
+app.get('/currenttime', function (req, res) {
+  res.send(Date.now()+'');
+});
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname,
+                         'index.html'));
+});
+
+var server = app.listen(port, function () {
+  console.log('Starting Http server on port %s',
+              port);
+});</code></pre>
+                </div>
+
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- Verticle -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h1>Verticle</h1>
+                <table><tr><td>
+                <pre style="background-color:yellow; height:300px; width:100px;"><code style="background-color:yellow; color:black;"></code></pre>
+                </td>
+                <td style="vertical-align:top; font-size:20px;">
+                    <ul>
+                        <li>Event-Loop Based</li>
+                        <li>Single-threaded</li>
+                        <li>Isolated Classloaders (In some cases)</li>
+                    </ul>
+                </td>
+                </tr>
+                </table>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- Verticle Event Loops -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h1>Verticle Event Loops</h1>
+                <div style="display:inline-block;">
+                <pre style="background-color:black; height:100px; width:100px;"><code style="background-color:black; color:white;"><img src="img/event-loop-image-white.jpg" height="80" width="80" /></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px;"><code style="background-color:yellow; color:black;"></code></pre>
+                </div>
+                <div style="display:inline-block; font-size:22px;">
+                    <ul>
+                        <li>Based on the Netty EventLoop</li>
+                        <li>Event loop count based on the number of cores</li>
+                        <li>Verticles can share event loops</li>
+                    </ul>
+                </div>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- Linear Scaling -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h1>Scaling</h1>
+
+                <div style="display:inline-block;">
+                <pre style="background-color:black; height:100px; width:100px;"><code style="background-color:black; color:white;"><img src="img/event-loop-image-white.jpg" height="80" width="80" /></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px;"><code style="background-color:yellow; color:black;"></code></pre>
+                </div>
+
+                <div style="display:inline-block;">
+                <pre style="background-color:black; height:100px; width:100px;"><code style="background-color:black; color:white;"><img src="img/event-loop-image-white.jpg" height="80" width="80" /></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px;"><code style="background-color:yellow; color:black;"></code></pre>
+                </div>
+
+                <div style="display:inline-block;">
+                <pre style="background-color:black; height:100px; width:100px;"><code style="background-color:black; color:white;"><img src="img/event-loop-image-white.jpg" height="80" width="80" /></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px;"><code style="background-color:yellow; color:black;"></code></pre>
+                </div>
+
+                <div style="display:inline-block;">
+                <pre style="background-color:black; height:100px; width:100px;"><code style="background-color:black; color:white;"><img src="img/event-loop-image-white.jpg" height="80" width="80" /></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px;"><code style="background-color:yellow; color:black;"></code></pre>
+                </div>
+
+                <pre><code class="bash">$ vertx run server.clj -instances 4</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- vertx command line tool -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h1>Vert.x Command Line Tool</h1>
+                <h4>Running Verticles</h4>
+                <pre><code class="bash">$ vertx run server.clj
+$ vertx run server.clj -instances 4 -conf config1.json
+$ vertx run server.clj -cp bin:lib/old -cluster</code></pre>
+                <h4>Running Modules</h4>
+<pre><code class="bash">$ vertx runzip module1.zip
+$ vertx runmod com.example2~my-mod~0.1.0</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- lein vertx -->
+<!-- limits -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h1>Leiningen Integration</h1>
+                <table>
+                <tr><td style="vertical-align:top;">
+                    <h4>Vert.x Leiningen Template</h4>
+                    <pre><code class="bash">$ lein new vertx example2</code></pre>
+                </td>
+                <td style="vertical-align:top;">
+                    <h4>lein-vertx Leiningen Plugin</h4>
+                    <pre><code class="bash">$ lein vertx run
+$ lein vertx buildmod</code></pre>
+                </td>
+                </tr>
+                <tr>
+                <td colspan="2" style="font-size:18px;">
+                <ul>
+                <li>Vert.x Leiningen Template designed to be used with lein-vertx</li>
+                <li>Not Officially Supported by Vert.x Project</li>
+                <li>lein-vertx Limited to Running Verticles, Building Modules, and a REPL</li>
+                <li>Limited Configuration Options</li>
+                <li>Limited Module Options (Does not package all resources)</li>
+                </ul>
+                </td>
+                </tr>
+                </table>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            The lein-vertx tool was not implimented by the Vertx project maintainers, so it has limits.
+            </aside>
+        </section>
+
+
+
+<!-- vertx standard verticle with dependencies -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h2>Lein-Vertx Example</h2>
+                <img src="img/lein-vertx-template-structure.png" style="height:300px;" />
+                <h4>project.clj</h4>
+                <pre style="font-size:14px;"><code class="clojure">(defproject example2 "0.1.0-SNAPSHOT"
+  :dependencies [[org.clojure/clojure "1.6.0"]
+                 [clj-time "0.8.0"]]
+  :plugins [[lein-vertx "0.3.1"]]
+  :vertx {:main example2.core/init
+          :author "FIXME: Your name"
+          :keywords ["FIXME: keywords"]
+          :developers ["FIXME: other developers"]})</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h2>Lein-Vertx Example</h2>
+                <h4>core.clj</h4>
+                <pre style="font-size:14px;"><code class="clojure">(ns example2.core
+  (:require [vertx.http :as http]
+            [vertx.http.route :as rm]
+            [clj-time.core :as t]
+            [clj-time.coerce :as tc]))
+
+(def routes
+  (-> (rm/get "/currenttime"
+              #(http/end (http/server-response %)
+                         (-> (t/now) tc/to-long str)))
+      (rm/all #".*"
+              #(http/send-file (http/server-response %) "index.html"))))
+
+(defn init
+  []
+  (let [port (Integer. (or (System/getenv "PORT") "3000"))]
+    (-> (http/server)
+        (http/on-request routes)
+        (http/listen port))
+    (println (str "Starting Http server on port " port))))</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Small</div></div>
+                <h2>Lein-Vertx Example</h2>
+                <iframe src="http://localhost:3000/" height="300" width="600"></iframe>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- ======================================================== -->
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>In the Medium</h1>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- Worker Verticle -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h1>Worker Verticles</h1>
+                <table><tr><td>
+                <div style="display:inline-block;">
+                <pre style="background-color:black; height:100px; width:220px;"><code style="background-color:black; color:white; margin-left:60px; margin-right:auto;"><img src="img/event-loop-image-white.jpg" height="75" width="75" /></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px; display:inline-block;"><code style="background-color:yellow; color:black;"></code></pre>
+                <pre style="background-color:yellow; height:300px; width:100px; display:inline-block;"><code style="background-color:yellow; color:black;"></code></pre>
+                </div>
+
+                </td>
+                <td style="vertical-align:top; font-size:22px;">
+                    <ul>
+                        <li>Thread-pool Based</li>
+                        <li>Default Maximum of 20 Threads</li>
+                        <li>Designed to pull work off the Event Bus</li>
+                    </ul>
+                </td>
+                </tr>
+                </table>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+                Ideal for interacting with blocking resources like databases.
+            </aside>
+        </section>
+
+
+
+<!-- Shared State -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h1>Shared Maps and Sets</h1>
+                <ul style="font-size:20px;">
+                    <li>Immutable</li>
+                    <li>Primatives</li>
+                    <li>Strings</li>
+                    <li>Buffers</li>
+                    <li>Custom Types with Interface</li>
+                </ul>
+                <h4>Limited to Single Instances</h4>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+                Constrained to immutable data.
+            </aside>
+        </section>
+
+
+
+<!-- Event bus -->
+<!-- Message and RPC patterns -->
+<!-- You have to build message persistance -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h1>Event Bus</h1>
+                <div>
+                    <h4>Broadcast</h4>
+                    <pre><code class="clojure">(vertx.eventbus/publish "namespaced.address1"
+                        {:a 1 :b "A12345"})</code></pre>
+                </div>
+
+                <div>
+                    <h4>Point-to-Point (Round Robin)</h4>
+                    <pre><code class="clojure">(vertx.eventbus/send "namespaced.address1"
+                     {:a 1 :b ""}
+                     (fn [data] (println data)))</code></pre>
+                </div>
+
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h1>Event Bus</h1>
+                    <h4>With Timeout</h4>
+                    <pre><code class="clojure">(vertx.eventbus/send "namespaced.address1"
+                     1000
+                     {:a 1 :b ""}
+                     (fn [error data] (println "A")))</code></pre>
+
+                    <h4>Request &amp; Response</h4>
+                    <pre><code class="clojure">(vertx.eventbus/on-message "namespaced.address1"
+    (fn [data]
+        (vertx.eventbus/reply {:a ""}
+          (fn [data]
+              (vertx.eventbus/reply {:b true}))
+                (fn [data]
+                    (vertx.eventbus/reply {:b true}))))</code></pre>
+
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+
+<!-- Modules Folder structure -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h2>Module Structure</h2>
+                <h4>Folder Structure</h4>
+                <img src="img/vertx-module-folder-structure.png" style="height:300px;" />
+                <h4>Naming</h4>
+                <pre><code>com.insanitydesign~vertx-mod-cassandra-persistor~0.4.1</code></pre>
+                <pre style="font-size:16px;"><code>&lt;dependency>
+    &lt;groupId>com.insanitydesign&lt;/groupId>
+    &lt;artifactId>vertx-mod-cassandra-persistor&lt;/artifactId>
+    &lt;version>0.4.1&lt;/version>
+&lt;/dependency></code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h2>Module Structure</h2>
+                <h4>mod.json</h4>
+                <pre><code class="javascript">{
+  "licenses": ["Eclipse Public License"],
+  "homepage": "http://example.com/FIXME",
+  "description": "FIXME: write description",
+  "developers": ["FIXME: other developers"],
+  "author": "FIXME: Your name",
+  "keywords": ["FIXME: keywords"],
+
+  "main": "Example2CoreInit.clj"
+}</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+<!-- Deployment (JDK7) -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h2>Deployment</h2>
+                <div style="display:inline-block; vertical-align:top;">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li>Minimum JDK 7</li>
+                        <li>Vertx Platform Download</li>
+                        <li>Permission to open at least one local port (for clustering)</li>
+                    </ul>
+                </div>
+                <div style="display:inline-block; vertical-align:top;"></div>
+                    <h4>Without Platform</h4>
+                    <ul>
+                        <li>Minimum JDK 7</li>
+                        <li>Fat Jar or Embedded Application</li>
+                    </ul>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+
+
+<!-- Upstart with vertx command line + git -->
+<!--
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Medium</div></div>
+                <h1>Upstart with Vertx command line + git</h1>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+-->
+
+<!-- ======================================================== -->
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>In the Large</h1>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+<!-- Clustering -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Clustering</h1>
+                <pre><code class="bash">$ vertx run server.clj -cluster</code></pre>
+                <ul>
+                    <li>Requires ability to open ports</li>
+                    <li>Distributed Event Bus</li>
+                    <li>Does not bridge Shared maps and sets</li>
+                </ul>
+                <h4>Cluster management is handled by Hazelcast.</h4>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+
+<!-- SockJS Bridge -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>SockJS Bridge</h1>
+                <h4>Builtin Event Bus Bridging</h4>
+<!-- No Auto reconnect -->
+<!--  -->
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+<!-- Custom Bridges -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Other Bridge Modules</h1>
+                <ul style="font-size:20px;">
+                <li>MQTT</li>
+                <li>ZeroMQ</li>
+                <li>clj-drone?</li>
+                </ul>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- High Availability -->
+<!-- Grouped Nodes / Quora -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>High Availability</h1>
+                <h4>Automatic Failover</h4>
+                <pre><code class="bash">$ vertx run server.clj -ha
+$ vertx -ha</code></pre>
+                <h4>Groups</h4>
+                <pre><code class="bash">$ vertx run server.clj -ha -hagroup frontend</code></pre>
+                <h4>Quorums</h4>
+                <pre><code class="bash">$ vertx run server.clj -ha -quorum 2
+$ vertx run server.clj -ha -quorum 2</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+            </aside>
+        </section>
+
+
+<!-- HazelCast -->
+<!-- Only used for cluster coordination -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Hazelcast 3.2.x</h1>
+                <iframe src="http://localhost:8080/mancenter-3.2.6/main.jsp" width="650" height="550"></iframe>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+<!-- HazelCast Connection and Transport options -->
+<!-- Multicast by default -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Cluster Detection</h1>
+                <ul style="font-size:20px;">
+                    <li>Multicast (Default)</li>
+                    <li>AWS Group</li>
+                    <li>TCP/IP</li>
+                </ul>
+                <h4>Managed from a cluster.xml file, found on the classpath,<br/> Vert.x install location, or Java system properties.</h4>
+                <pre><code style="bash">$ java -Dvertx.cluster.public.host=10.164.105.33 \
+  -Dvertx.cluster.public.port=60558 ... \
+  org.vertx.java.platform.impl.cli.Starter run server.clj \
+  -cluster -cluster-port 9123 -cluster-host 127.10.192.129</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+<!-- Cluster Configuration -->
+<!--        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+-->
+
+<!-- FatJars -->
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Fat Jars</h1>
+                <h4>The Uberjars of Vert.x</h4>
+                <pre><code class="bash">$ vertx fatjar mymodule-1.0
+$ java -jar mymodule-1.0-fat.jar
+$ java -jar mymodule-1.0-fat.jar -cluster -conf myconf.json</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+<!-- Heroku, AWS, Beanstalk, Core OS -->
+<!-- Docker -->
+<!-- EC2, Digital Ocean -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Deployment Options</h1>
+                <h4>EC2, Digital Ocean, or other VMs</h4> 
+                <h4>Heroku</h4>
+                <iframe src="https://intense-sands-3329.herokuapp.com/" height="120" width="600"></iframe>
+                <pre style="font-size:14px;"><code class="bash">$ heroku create --stack cedar \
+  --buildpack https://github.com/Jared314/heroku-buildpack-vertx-jdk7.git
+</code></pre>
+                <h4>Docker</h4>
+                <pre style="font-size:14px;"><code>FROM dockerfile/java:oracle-java8
+MAINTAINER Oliver Nautsch <oliver.nautsch@gmail.com>
+
+RUN wget http://dl.bintray.com/vertx/downloads/vert.x-2.1.2.tar.gz && \
+    tar zxf vert.x-2.1.2.tar.gz -C /usr/share && \
+    rm vert.x-2.1.2.tar.gz && \
+    ln -s /usr/share/vert.x-2.1.2/bin/vertx /usr/bin/vertx
+
+CMD ["vertx"]</code></pre>
+<pre style="font-size:14px;"><code style="bash">$ docker pull ollin/vertx</code></pre>
+                <h4>AWS Beanstalk</h4>
+                <h4>I have not tested Beanstalk, but I don't see why not.</h4>
+                <div class="unbrokenline"></div>
+            </div>
+            <aside>
+
+            </aside>
+        </section>
+
+
+
+<!-- Clojure app using Eventbus and SockJS Bridge -->
+<!--        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1></h1>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>-->
+
+
+<!-- ======================================================== -->
+
+
+
+<!-- Polyglot Language Support -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Polyglot Language Support</h1>
+                <ul style="display:inline-block; font-size:20px; vertical-align:top;">
+                    <li>Java</li>
+                    <li>Groovy</li>
+                    <li>Scala</li>
+                    <li>Clojure</li>
+                    <li>Javascript (Rhino &amp; Nashorn)</li>
+                </ul>
+                <ul style="display:inline-block; font-size:20px; vertical-align:top;">
+                    <li>CoffeeScript</li>
+                    <li>JRuby</li>
+                    <li>Jython</li>
+                    <li>PHP (Quercus)</li>
+                    <li>(Custom...)</li>
+                </ul>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+<!-- Embedding the Event Bus -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Embedding the Event Bus</h1>
+                <pre><code class="clojure">(ns eventbus1.core
+  (:require [vertx.embed :as vertx]
+            [vertx.eventbus :as eb])
+  (:import [java.util.concurrent CountDownLatch]
+           [org.vertx.java.core Handler])
+  (:gen-class))
+
+(defn -main [& args]
+  (vertx/set-vertx! (apply vertx/vertx args))
+  (let [latch (CountDownLatch. 1)]
+    
+    (eb/on-message "namespaced.address1" (fn [data] (eb/reply data)))
+
+    (eb/on-message
+      "namespaced.address2"
+      (reify Handler
+             (handle [_ msg]
+               (let [m {:address (.address msg)
+                        :body (.body msg)}]
+                    (eb/publish "namespaced.address3" (:body m))))))
+
+    (.await latch)))</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+<!-- Embedding the Platform -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Embedding the Platform</h1>
+                <h4>project.clj</h4>
+                <pre><code>(defproject embedded1 "0.1.0-SNAPSHOT"
+  :description "FIXME: write description"
+  :url "http://example.com/FIXME"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :dependencies [[org.clojure/clojure "1.6.0"]
+                 ;; Required for Vertx Embedding
+                 [io.vertx/vertx-core "2.1.2"]
+                 [io.vertx/vertx-platform "2.1.2"]
+                 [io.vertx/vertx-hazelcast "2.1.2"]
+                 [io.vertx/clojure-api "1.0.4"]]
+
+  :source-paths ["src/clj"]
+
+  :main embedded1.core)</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+<!-- Clojure Service with embedded Eventbus and SockJS Bridge -->
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>SockJS Event Bus Bridge</h1>
+                <pre><code class="clojure">(ns event-server.core
+  (:require [vertx.embed :as vertx]
+            [vertx.http :as http]
+            [vertx.http.sockjs :as sockjs])
+  (:import [java.util.concurrent CountDownLatch])
+  (:gen-class))
+
+(defn req-handler [req]
+  (condp = (.uri req)
+    "/" nil
+    "/favicon.ico" nil))
+
+(defn -main [& args]
+  (vertx/set-vertx! (apply vertx/vertx args))
+  (let [latch (CountDownLatch. 1)
+        server (-> (http/server)
+                   (http/on-request req-handler))]
+    
+    (-> (sockjs/sockjs-server server)
+        (sockjs/set-hooks
+          :created (fn [sock] (println "handleSocketCreated") true)
+          :closed (fn [sock] (println "handleSocketClosed"))
+          :send (fn [sock msg address] (println "handleSend") true)
+          :publish (fn [sock msg address] (println "handlePub") true)
+          :pre-register (fn [sock address] (println "handlePreRegister") true)
+          :post-register (fn [sock address] (println "handlePostRegister"))
+          :unregister (fn [sock address] (println "handleUnregister") true))
+
+        (sockjs/bridge {:prefix "/events"} [{}] [{}]))
+    
+    (http/listen server 3000)
+    (.await latch)))</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>SockJS Event Bus Bridge</h1>
+                <h4>client.cljs</h4>
+                <pre><code class="clojure">(ns cljsclient.core
+  (:require [vertx.client.eventbus :as eb]))
+
+  (let [eventbus (eb/eventbus "/events")]
+    (eb/on-open eventbus (fn [bus]
+                           (println "eventbus open")
+
+                           (eb/on-message bus
+                                          "namespaced.address3"
+                                          (fn [data] (.log js/console data)
+                                                     (eb/close bus)))
+
+                           (eb/send bus "namespaced.address1" {:a 1 :b 2})))
+
+    (eb/on-close eventbus (fn [] (println "eventbus closed"))))</code></pre>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+<!-- Version 3 -->
+        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <h1>Vert.x 3.0 (Soon&trade;)</h1>
+                <h4>Changes</h4>
+                <div style="display:inline-block; vertical-align:top;">
+                    <ul style="font-size:20px;">
+                        <li>JDK 8 Required</li>
+                        <li>Jars instead of Modules</li>
+                        <li>Reactive Stream Platform API (RxJava style)</li>
+                        <li>Auto-generated Language API</li>
+                        <li>Supervisor Trees</li>
+                        <li>Monitoring</li>
+                    </ul>
+                </div>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+
+
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Does Vert.x make Node.js <strong>irrelevant?</strong></h1>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+
+
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Building with <strong>Clojure</strong> and <strong>Vert.x</strong></h1>
+                <div class="unbrokenline"></div>
+                <div class="me"></div>
+                <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+                </div>
+            </div>
+        </section>
+
+
+
+
+    </article>
+    
+    <script src="bespoke.min.js"></script>
+    <script src="highlight.pack.js"></script>
+    <script>
+        var deck1 = bespoke.from('article', {
+            keys: true,
+            run: true,
+            hash: true
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+</body>
+</html>
