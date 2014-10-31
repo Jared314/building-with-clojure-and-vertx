@@ -1,73 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=1024" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Building with Clojure and Vert.x | by Jared Lobberecht @jared314</title>
-    
-    <meta name="description" content="" />
-    <meta name="author" content="Jared Lobberecht" />
-
+    <title>Building with Clojure and Vert.x</title>
+    <meta charset='utf-8'>
     <base href="./presentation/" />
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/font.css">
+    <link rel="stylesheet" href="css/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="css/slides_old.css">
+</head>
+<body>
+    <article id="deck1">
 
-    <link href="css/normalize.css" rel="stylesheet" />
-    <link href="css/font.css" rel="stylesheet" />
-    <link href="css/styles/monokai_sublime.css" rel="stylesheet" />
-    <link href="css/slides.css" rel="stylesheet" />
- </head>
-
-<body class="impress-not-supported">
-
-<div class="fallback-message">
-    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
-    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
-</div>
-
-
-<article id="impress">
-
-    <section class="step">
-        <div class="content">
-            <div class="unbrokenline"></div>
-            <h1>Building with <strong>Clojure</strong> and <strong>Vert.x</strong></h1>
-            <div class="unbrokenline"></div>
-            <div class="me"></div>
-            <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Building with <strong>Clojure</strong> and <strong>Vert.x</strong></h1>
+                <div class="unbrokenline"></div>
+                <div class="me"></div>
+                <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-
-
-    <section class="step">
-        <div class="content">
-            <div class="unbrokenline"></div>
-            <h1>Does Vert.x make Node.js <strong>irrelevant?</strong></h1>
-            <div class="unbrokenline"></div>
-            <div class="me"></div>
-            <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Does Vert.x make Node.js <strong>irrelevant?</strong></h1>
+                <div class="unbrokenline"></div>
+                <div class="me"></div>
+                <div>Jared Lobberecht<br/><a target="_blank" href="http://blog.lobberecht.com/">http://blog.Lobberecht.com</a><br/><a target="_blank" href="https://twitter.com/jared314">@Jared314</a><br/><a target="_blank" href="http://github.com/Jared314">Jared@Lobberecht.com</a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
 
-    <section class="step">
-        <div class="content">
-            <div class="unbrokenline"></div>
-            <h1>Knowledge</h1>
-            <h4>is the difference between choice and choices.</h4>
-            <div class="byline">
-                <div class="classy">Unknown Author</div>
+        <section>
+            <div class="content">
+                <div class="unbrokenline"></div>
+                <h1>Knowledge</h1>
+                <h4>is the difference between choice and choices.</h4>
+                <div class="byline">
+                    <div class="classy">Unknown Author</div>
+                </div>
             </div>
-        </div>
-    </section>
-
+        </section>
 
 
 <!-- Node.js Express example -->
 <!-- Vert.x example -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="unbrokenline"></div>
                 <h1>Simple Example</h1>
@@ -127,7 +109,7 @@ var server = app.listen(port, function () {
 
 
 <!-- Verticle -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h1>Verticle</h1>
@@ -151,7 +133,7 @@ var server = app.listen(port, function () {
 
 
 <!-- Verticle Event Loops -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h1>Verticle Event Loops</h1>
@@ -174,7 +156,7 @@ var server = app.listen(port, function () {
 
 
 <!-- Linear Scaling -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h1>Scaling</h1>
@@ -208,7 +190,7 @@ var server = app.listen(port, function () {
 
 
 <!-- vertx command line tool -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h1>Vert.x Command Line Tool</h1>
@@ -228,7 +210,7 @@ $ vertx runmod com.example2~my-mod~0.1.0</code></pre>
 
 <!-- lein vertx -->
 <!-- limits -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h1>Leiningen Integration</h1>
@@ -265,7 +247,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- vertx standard verticle with dependencies -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h2>Lein-Vertx Example</h2>
@@ -286,7 +268,7 @@ $ lein vertx buildmod</code></pre>
         </section>
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h2>Lein-Vertx Example</h2>
@@ -318,7 +300,7 @@ $ lein vertx buildmod</code></pre>
         </section>
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Small</div></div>
                 <h2>Lein-Vertx Example</h2>
@@ -331,7 +313,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- ======================================================== -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="unbrokenline"></div>
                 <h1>In the Medium</h1>
@@ -343,7 +325,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- Worker Verticle -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h1>Worker Verticles</h1>
@@ -374,7 +356,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- Shared State -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h1>Shared Maps and Sets</h1>
@@ -398,7 +380,7 @@ $ lein vertx buildmod</code></pre>
 <!-- Event bus -->
 <!-- Message and RPC patterns -->
 <!-- You have to build message persistance -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h1>Event Bus</h1>
@@ -422,7 +404,7 @@ $ lein vertx buildmod</code></pre>
         </section>
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h1>Event Bus</h1>
@@ -450,7 +432,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- Modules Folder structure -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h2>Module Structure</h2>
@@ -468,7 +450,7 @@ $ lein vertx buildmod</code></pre>
         </section>
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h2>Module Structure</h2>
@@ -489,7 +471,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- Deployment (JDK7) -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h2>Deployment</h2>
@@ -517,7 +499,7 @@ $ lein vertx buildmod</code></pre>
 
 <!-- Upstart with vertx command line + git -->
 <!--
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Medium</div></div>
                 <h1>Upstart with Vertx command line + git</h1>
@@ -527,7 +509,7 @@ $ lein vertx buildmod</code></pre>
 -->
 
 <!-- ======================================================== -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="unbrokenline"></div>
                 <h1>In the Large</h1>
@@ -538,7 +520,7 @@ $ lein vertx buildmod</code></pre>
         </section>
 
 <!-- Clustering -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Clustering</h1>
@@ -558,7 +540,7 @@ $ lein vertx buildmod</code></pre>
 
 
 <!-- SockJS Bridge -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>SockJS Bridge</h1>
@@ -572,7 +554,7 @@ $ lein vertx buildmod</code></pre>
         </section>
 
 <!-- Custom Bridges -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Other Bridge Modules</h1>
@@ -590,7 +572,7 @@ $ lein vertx buildmod</code></pre>
 
 <!-- High Availability -->
 <!-- Grouped Nodes / Quora -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>High Availability</h1>
@@ -611,7 +593,7 @@ $ vertx run server.clj -ha -quorum 2</code></pre>
 
 <!-- HazelCast -->
 <!-- Only used for cluster coordination -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Hazelcast 3.2.x</h1>
@@ -623,7 +605,7 @@ $ vertx run server.clj -ha -quorum 2</code></pre>
 
 <!-- HazelCast Connection and Transport options -->
 <!-- Multicast by default -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Cluster Detection</h1>
@@ -641,11 +623,18 @@ $ vertx run server.clj -ha -quorum 2</code></pre>
             </div>
         </section>
 
-
+<!-- Cluster Configuration -->
+<!--        <section>
+            <div class="content">
+                <div class="byline"><div class="classy">In the Large</div></div>
+                <div class="unbrokenline"></div>
+            </div>
+        </section>
+-->
 
 <!-- FatJars -->
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Fat Jars</h1>
@@ -660,7 +649,7 @@ $ java -jar mymodule-1.0-fat.jar -cluster -conf myconf.json</code></pre>
 <!-- Heroku, AWS, Beanstalk, Core OS -->
 <!-- Docker -->
 <!-- EC2, Digital Ocean -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Deployment Options</h1>
@@ -707,7 +696,7 @@ CMD ["vertx"]</code></pre>
 
 
 <!-- Polyglot Language Support -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Polyglot Language Support</h1>
@@ -732,7 +721,7 @@ CMD ["vertx"]</code></pre>
 
 
 <!-- Embedding the Event Bus -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Embedding the Event Bus</h1>
@@ -765,7 +754,7 @@ CMD ["vertx"]</code></pre>
 
 
 <!-- Embedding the Platform -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Embedding the Platform</h1>
@@ -793,7 +782,7 @@ CMD ["vertx"]</code></pre>
 
 <!-- Clojure Service with embedded Eventbus and SockJS Bridge -->
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>SockJS Event Bus Bridge</h1>
@@ -835,7 +824,7 @@ CMD ["vertx"]</code></pre>
 
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>SockJS Event Bus Bridge</h1>
@@ -862,7 +851,7 @@ CMD ["vertx"]</code></pre>
 
 
 <!-- Version 3 -->
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="byline"><div class="classy">In the Large</div></div>
                 <h1>Vert.x 3.0 (Soon&trade;)</h1>
@@ -884,7 +873,7 @@ CMD ["vertx"]</code></pre>
 
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="unbrokenline"></div>
                 <h1>Does Vert.x make Node.js <strong>irrelevant?</strong></h1>
@@ -893,7 +882,7 @@ CMD ["vertx"]</code></pre>
         </section>
 
 
-        <section class="step">
+        <section>
             <div class="content">
                 <div class="unbrokenline"></div>
                 <h1>Building with <strong>Clojure</strong> and <strong>Vert.x</strong></h1>
@@ -905,19 +894,19 @@ CMD ["vertx"]</code></pre>
         </section>
 
 
-<!--     <div id="overview" class="step" data-scale="5"></div>-->
-</article>
 
 
-
-<script src="js/jquery-2.1.1.min.js"></script>
-<script src="js/highlight.pack.js"></script>
-<script src="js/impress.min.js"></script>
-<script>
-$(function(){
-  impress().init();
-  hljs.initHighlightingOnLoad();
-});
-</script>
+    </article>
+    
+    <script src="js/bespoke.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script>
+        var deck1 = bespoke.from('article', {
+            keys: true,
+            run: true,
+            hash: true
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
 </body>
 </html>
